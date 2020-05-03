@@ -16,6 +16,7 @@
         <p>Total de likes: {{ meme.likes }}</p>
         <button
           mat-raised-button
+          [disabled]="getLikesMap()[meme.id]"
           color="primary"
           (click)="likeMeme(meme.id, meme.likes)"
         >

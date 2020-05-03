@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { Meme } from './models/meme.interface';
 
 @Component({
@@ -19,7 +20,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.memes$ = this.firestore
       .collection<Meme>('memes', (ref) => ref.where('approved', '==', true))
-      .valueChanges({ idField: 'id' });
+      .valueChanges({ idField: 'id' })
+      .pipe(first());
   }
 
   addMeme(url: string) {
@@ -30,14 +32,15 @@ export class AppComponent implements OnInit {
     });
   }
 
-  likeMeme(id: string, currentLikes: number = 0) {
-    const likes = currentLikes + 1;
+  likeMeme(meme: Meme) {
+    const likes = (meme.likes || 0) + 1;
     this.firestore
-      .doc(`memes/${id}`)
+      .doc(`memes/${meme.id}`)
       .set({ likes }, { merge: true })
       .then(() => {
-        this.likesMap[id] = true;
-        this.updateItemInLS(id);
+        this.likesMap[meme.id] = true;
+        this.updateItemInLS(meme.id);
+        meme.likes++;
       });
   }
 

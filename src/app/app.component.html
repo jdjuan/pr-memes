@@ -11,6 +11,17 @@
   <div *ngIf="memes$ | async as memes" class="meme-container">
     <mat-card *ngFor="let meme of memes">
       <img [src]="meme.url" alt="" />
+
+      <mat-card-footer style="margin: 4px;">
+        <p>Total de likes: {{ meme.likes }}</p>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="likeMeme(meme.id, meme.likes)"
+        >
+          ❤️ LIKE
+        </button>
+      </mat-card-footer>
     </mat-card>
   </div>
 </div>

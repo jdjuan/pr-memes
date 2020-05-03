@@ -15,7 +15,9 @@ export class AppComponent implements OnInit {
   constructor(private firestore: AngularFirestore) {}
 
   ngOnInit() {
-    this.memes$ = this.firestore.collection<Meme>('memes').valueChanges();
+    this.memes$ = this.firestore
+      .collection<Meme>('memes', (ref) => ref.where('approved', '==', true))
+      .valueChanges({ idField: 'id' });
   }
 
   addMeme(url: string) {
@@ -24,5 +26,10 @@ export class AppComponent implements OnInit {
       url,
       likes: 0,
     });
+  }
+
+  likeMeme(id: string, currentLikes: number = 0) {
+    const likes = currentLikes + 1;
+    this.firestore.doc(`memes/${id}`).set({ likes }, { merge: true });
   }
 }

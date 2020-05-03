@@ -1,8 +1,11 @@
-<h1>Hola Mundo!</h1>
+<mat-toolbar color="primary">
+  <h1>PR Memes</h1>
+</mat-toolbar>
 
 <div *ngIf="memes$ | async as memes">
-  <div *ngFor="let meme of memes">
-    {{ meme.url }}
+  <mat-card *ngFor="let meme of memes">
     {{ meme.approved }}
-  </div>
+    {{ meme.likes }}
+    <img [src]="meme.url" alt="">
+  </mat-card>
 </div>

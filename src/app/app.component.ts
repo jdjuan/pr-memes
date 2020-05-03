@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-
+import { Meme } from './models/meme.interface';
 
 @Component({
   selector: 'app-root',
@@ -10,11 +10,11 @@ import { Observable } from 'rxjs';
 })
 export class AppComponent implements OnInit {
   title = 'pr-memes';
-  memes$: Observable<any>;
+  memes$: Observable<Meme[]>;
 
   constructor(private firestore: AngularFirestore) {}
 
   ngOnInit() {
-    this.memes$ = this.firestore.collection('memes').valueChanges();
+    this.memes$ = this.firestore.collection<Meme>('memes').valueChanges();
   }
 }

@@ -1,6 +1,6 @@
 export interface Meme {
   url: string;
   approved: boolean;
-  id: string;
+  id?: string;
   likes: number;
 }

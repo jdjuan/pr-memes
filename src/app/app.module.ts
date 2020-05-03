@@ -8,6 +8,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,8 +18,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     BrowserAnimationsModule,
+    MatInputModule,
     MatCardModule,
     MatToolbarModule,
+    MatFormFieldModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

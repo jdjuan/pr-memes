@@ -1,0 +1,14 @@
+.container {
+  text-align: center;
+  .meme-container {
+    display: inline-block;
+    width: 600px;
+    mat-card {
+      margin-bottom: 2rem;
+
+      img {
+        width: 100%;
+      }
+    }
+  }
+}

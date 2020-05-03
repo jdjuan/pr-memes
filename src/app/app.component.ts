@@ -17,4 +17,12 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.memes$ = this.firestore.collection<Meme>('memes').valueChanges();
   }
+
+  addMeme(url: string) {
+    this.firestore.collection<Meme>('memes').add({
+      approved: false,
+      url,
+      likes: 0,
+    });
+  }
 }

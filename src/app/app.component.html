@@ -2,10 +2,15 @@
   <h1>PR Memes</h1>
 </mat-toolbar>
 
-<div *ngIf="memes$ | async as memes">
-  <mat-card *ngFor="let meme of memes">
-    {{ meme.approved }}
-    {{ meme.likes }}
-    <img [src]="meme.url" alt="">
-  </mat-card>
+<div class="container">
+  <mat-form-field>
+    <mat-label>Meme URL</mat-label>
+    <input matInput (keyup.enter)="addMeme($event.target.value)" />
+  </mat-form-field>
+  <br />
+  <div *ngIf="memes$ | async as memes" class="meme-container">
+    <mat-card *ngFor="let meme of memes">
+      <img [src]="meme.url" alt="" />
+    </mat-card>
+  </div>
 </div>

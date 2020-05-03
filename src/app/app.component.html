@@ -1,1 +1,8 @@
 <h1>Hola Mundo!</h1>
+
+<div *ngIf="memes$ | async as memes">
+  <div *ngFor="let meme of memes">
+    {{ meme.url }}
+    {{ meme.approved }}
+  </div>
+</div>

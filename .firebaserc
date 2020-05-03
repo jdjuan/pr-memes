@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "pr-memes": {
+      "hosting": {
+        "pr-memes": [
+          "pr-memes"
+        ]
+      }
+    }
+  }
+}

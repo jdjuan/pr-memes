@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "pr-memes": {
@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "pr-memes"
+    }
+  },
+  "defaultProject": "pr-memes",
+  "cli": {
+    "analytics": "93905b1e-760c-43ab-a9b5-5ecdc936fff7"
+  }
 }

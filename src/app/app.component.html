@@ -3,26 +3,25 @@
 </mat-toolbar>
 
 <div class="container">
-  <mat-form-field>
-    <mat-label>Meme URL</mat-label>
-    <input matInput (keyup.enter)="addMeme($event.target.value)" />
-  </mat-form-field>
+  <form class="entry-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field class="entry-form__input">
+      <mat-label>Meme URL</mat-label>
+      <input formControlName="url" matInput />
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="addingMeme"
+      type="submit">
+      <mat-spinner class="entry-form__spinner" [diameter]="22" *ngIf="addingMeme; else notAdding"></mat-spinner>
+      <ng-template #notAdding> Send </ng-template></button>
+  </form>
   <br />
   <div *ngIf="memes$ | async as memes" class="meme-container">
     <mat-card *ngFor="let meme of memes">
-      <img [src]="meme.url" alt="" />
-
-      <mat-card-footer style="margin: 4px;">
-        <p>Total de likes: {{ meme.likes }}</p>
-        <button
-          mat-raised-button
-          [disabled]="getLikesMap()[meme.id]"
-          color="primary"
-          (click)="likeMeme(meme)"
-        >
-          ❤️ LIKE
-        </button>
-      </mat-card-footer>
+      <app-meme [meme]="meme"
+                [isUpvoted]="getLikesMap()[meme.id]"
+                (like)="likeMeme(meme)"></app-meme>
     </mat-card>
   </div>
 </div>

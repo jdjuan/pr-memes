@@ -1,0 +1,10 @@
+<img class="meme__image" [src]="meme.url" alt="Meme for PR" />
+
+<div class="meme__footer">
+  <p class="meme__likes">{{ meme.likes }} upvotes</p>
+  <button
+    mat-raised-button
+    [disabled]="isUpvoted"
+    color="primary"
+    (click)="like.emit()"> LIKE ❤️ </button>
+</div>

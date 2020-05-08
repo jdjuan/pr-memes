@@ -1,8 +1,10 @@
 .container {
   text-align: center;
+  width: 600px;
+  margin: 30px auto 0;
+
   .meme-container {
     display: inline-block;
-    width: 600px;
     mat-card {
       margin-bottom: 2rem;
 
@@ -10,5 +12,19 @@
         width: 100%;
       }
     }
+  }
+}
+
+.entry-form {
+  display: flex;
+  align-items: center;
+
+  &__input {
+    flex-grow: 1;
+    margin-right: 20px;
+  }
+
+  &__spinner {
+    margin: 10px auto;
   }
 }

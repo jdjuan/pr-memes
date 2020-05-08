@@ -3,6 +3,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { Meme } from './models/meme.interface';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,13 @@ export class AppComponent implements OnInit {
 
   likesMap: Record<string, boolean> = {};
 
-  constructor(private firestore: AngularFirestore) {}
+  addingMeme = false;
+
+  form = new FormGroup({
+    url: new FormControl('', [Validators.required])
+  });
+
+  constructor(private firestore: AngularFirestore, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.memes$ = this.firestore
@@ -25,11 +33,6 @@ export class AppComponent implements OnInit {
   }
 
   addMeme(url: string) {
-    this.firestore.collection<Meme>('memes').add({
-      approved: false,
-      url,
-      likes: 0,
-    });
   }
 
   likeMeme(meme: Meme) {
@@ -53,5 +56,31 @@ export class AppComponent implements OnInit {
     const currentMap = this.getLikesMap();
     currentMap[id] = true;
     localStorage.setItem('likesMap', JSON.stringify(currentMap));
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      this.addingMeme = true;
+      console.log(this.form.value.url);
+      this.firestore.collection<Meme>('memes').add({
+        approved: false,
+        url: this.form.value.url,
+        likes: 0,
+      }).then(() => {
+        this.form.reset();
+        this.form.markAsPristine();
+        this.addingMeme = false;
+        this.snackBar.open('Thank you! Your meme will show up in the feed once we approve it.', null, {
+          duration: 3000
+        });
+      }, () => {
+        this.form.reset();
+        this.form.markAsPristine();
+        this.addingMeme = false;
+        this.snackBar.open('There\'s been a problem adding your meme. Please trying again later.', null, {
+          duration: 3000
+        });
+      });
+    }
   }
 }

@@ -14,25 +14,26 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class AppComponent implements OnInit {
   title = 'pr-memes';
   memes$: Observable<Meme[]>;
-
+  urlReg = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
   likesMap: Record<string, boolean> = {};
-
   addingMeme = false;
-
   form = new FormGroup({
-    url: new FormControl('', [Validators.required])
+    url: new FormControl('', [
+      Validators.required,
+      Validators.pattern(this.urlReg),
+    ]),
   });
 
-  constructor(private firestore: AngularFirestore, private snackBar: MatSnackBar) { }
+  constructor(
+    private firestore: AngularFirestore,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.memes$ = this.firestore
       .collection<Meme>('memes', (ref) => ref.where('approved', '==', true))
       .valueChanges({ idField: 'id' })
       .pipe(first());
-  }
-
-  addMeme(url: string) {
   }
 
   likeMeme(meme: Meme) {
@@ -61,26 +62,39 @@ export class AppComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
       this.addingMeme = true;
-      console.log(this.form.value.url);
-      this.firestore.collection<Meme>('memes').add({
-        approved: false,
-        url: this.form.value.url,
-        likes: 0,
-      }).then(() => {
-        this.form.reset();
-        this.form.markAsPristine();
-        this.addingMeme = false;
-        this.snackBar.open('Thank you! Your meme will show up in the feed once we approve it.', null, {
-          duration: 3000
-        });
-      }, () => {
-        this.form.reset();
-        this.form.markAsPristine();
-        this.addingMeme = false;
-        this.snackBar.open('There\'s been a problem adding your meme. Please trying again later.', null, {
-          duration: 3000
-        });
-      });
+      this.firestore
+        .collection<Meme>('memes')
+        .add({
+          approved: false,
+          url: this.form.value.url,
+          likes: 0,
+        })
+        .then(
+          () => {
+            this.form.reset();
+            this.form.markAsPristine();
+            this.addingMeme = false;
+            this.snackBar.open(
+              'Thank you! Your meme will show up in the feed once we approve it.',
+              null,
+              {
+                duration: 7000,
+              }
+            );
+          },
+          () => {
+            this.form.reset();
+            this.form.markAsPristine();
+            this.addingMeme = false;
+            this.snackBar.open(
+              'There has been a problem adding your meme. Please trying again later.',
+              null,
+              {
+                duration: 7000,
+              }
+            );
+          }
+        );
     }
   }
 }

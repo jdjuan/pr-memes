@@ -6,22 +6,30 @@
   <form class="entry-form" [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-form-field class="entry-form__input">
       <mat-label>Meme URL</mat-label>
-      <input formControlName="url" matInput />
+      <input formControlName="url" matInput type="url" />
     </mat-form-field>
     <button
       mat-raised-button
       color="primary"
       [disabled]="addingMeme"
-      type="submit">
-      <mat-spinner class="entry-form__spinner" [diameter]="22" *ngIf="addingMeme; else notAdding"></mat-spinner>
-      <ng-template #notAdding> Send </ng-template></button>
+      type="submit"
+    >
+      <mat-spinner
+        class="entry-form__spinner"
+        [diameter]="22"
+        *ngIf="addingMeme; else notAdding"
+      ></mat-spinner>
+      <ng-template #notAdding> Send </ng-template>
+    </button>
   </form>
   <br />
   <div *ngIf="memes$ | async as memes" class="meme-container">
     <mat-card *ngFor="let meme of memes">
-      <app-meme [meme]="meme"
-                [isUpvoted]="getLikesMap()[meme.id]"
-                (like)="likeMeme(meme)"></app-meme>
+      <app-meme
+        [meme]="meme"
+        [isUpvoted]="getLikesMap()[meme.id]"
+        (like)="likeMeme(meme)"
+      ></app-meme>
     </mat-card>
   </div>
 </div>

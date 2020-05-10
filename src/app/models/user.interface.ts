@@ -2,7 +2,7 @@ export interface AppUser {
   email: string;
   displayName: string;
   photoURL: string;
-  rol: {
+  role: {
     user: boolean;
     admin?: boolean;
   };

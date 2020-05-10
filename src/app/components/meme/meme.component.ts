@@ -20,10 +20,10 @@ export class MemeComponent {
   like = new EventEmitter<void>();
 
   @Output()
-  approvedChange = new EventEmitter();
+  approveChange = new EventEmitter();
 
   changeApproval() {
     const newMeme = { ...this.meme, approved: !this.meme.approved };
-    this.approvedChange.emit(newMeme);
+    this.approveChange.emit(newMeme);
   }
 }

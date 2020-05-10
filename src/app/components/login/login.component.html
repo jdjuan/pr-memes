@@ -5,11 +5,11 @@
   <img [src]="user.photoURL" [alt]="user.displayName" class="avatar" />
 
   <button mat-button color="accent" (click)="auth.logOut()">
-    SALIR
+    LOGOUT
   </button>
 </div>
 <ng-template #noUser>
   <button mat-raised-button color="accent" (click)="auth.googleLogin()">
-    INGRESAR
+    LOGIN
   </button>
 </ng-template>

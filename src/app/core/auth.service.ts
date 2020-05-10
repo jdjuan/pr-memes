@@ -1,3 +1,4 @@
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AppUser } from './../models/user.interface';
 import { Injectable } from '@angular/core';
@@ -6,13 +7,21 @@ import { switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { auth, User } from 'firebase/app';
 
+const matSnackbarOptions: MatSnackBarConfig = {
+  duration: 5000,
+  verticalPosition: 'top',
+};
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   user$: Observable<AppUser>;
 
-  constructor(private afAuth: AngularFireAuth, private db: AngularFirestore) {
+  constructor(
+    private afAuth: AngularFireAuth,
+    private db: AngularFirestore,
+    private snackbar: MatSnackBar
+  ) {
     this.user$ = this.afAuth.authState.pipe(
       switchMap((fbUser) => {
         if (fbUser) {
@@ -30,11 +39,32 @@ export class AuthService {
   googleLogin() {
     this.afAuth
       .signInWithPopup(new auth.GoogleAuthProvider())
-      .then((credential) => this.updateUser(credential.user));
+      .then((credential) => {
+        this.snackbar.open(`🎉 You are logged in`, 'OK', matSnackbarOptions);
+        this.updateUser(credential.user);
+      })
+      .catch((error) =>
+        this.snackbar.open(
+          `Something went wrong: ${error}`,
+          'OK',
+          matSnackbarOptions
+        )
+      );
   }
 
   logOut() {
-    this.afAuth.signOut();
+    this.afAuth
+      .signOut()
+      .then(() =>
+        this.snackbar.open('👋 You are logged out', 'OK', matSnackbarOptions)
+      )
+      .catch((error) =>
+        this.snackbar.open(
+          `Something went wrong: ${error}`,
+          'OK',
+          matSnackbarOptions
+        )
+      );
   }
 
   private updateUser(user: User) {
@@ -45,7 +75,7 @@ export class AuthService {
         email: user.email,
         displayName: user.displayName,
         photoURL: user.photoURL,
-        rol: {
+        role: {
           user: true,
           admin: this.isAdmin(user.email),
         },
@@ -53,10 +83,11 @@ export class AuthService {
   }
 
   private isAdmin(email: string) {
-    return Boolean(
-      email === 'nicolas@pappcorn.com' ||
-        'ce.roso398@gmail.com' ||
-        'david.juanherrera@gmail.com'
-    );
+    const admins = [
+      'nicolas@pappcorn.com',
+      'ce.roso398@gmail.com',
+      'david.juanherrera@gmail.com',
+    ];
+    return admins.indexOf(email) !== -1;
   }
 }

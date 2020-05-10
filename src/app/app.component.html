@@ -27,12 +27,12 @@
   </form>
   <div *ngIf="user$ | async as user">
     <mat-slide-toggle
-      *ngIf="user.rol.admin"
+      *ngIf="user.role.admin"
       color="primary"
       [checked]="adminView | async"
       (toggleChange)="adminView.next(!adminView.value)"
     >
-      {{ (adminView | async) ? 'Vista de administrador' : 'Vista de usuario' }}
+      {{ (adminView | async) ? 'Admin view' : 'User view' }}
     </mat-slide-toggle>
   </div>
   <br />
@@ -43,7 +43,7 @@
         [isUpvoted]="getLikesMap()[meme.id]"
         [isAdmin]="adminView | async"
         (like)="likeMeme(meme)"
-        (approvedChange)="changeApproval($event)"
+        (approveChange)="changeApproval($event)"
       ></app-meme>
     </mat-card>
   </div>

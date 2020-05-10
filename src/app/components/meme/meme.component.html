@@ -2,9 +2,20 @@
 
 <div class="meme__footer">
   <p class="meme__likes">{{ meme.likes }} upvotes</p>
+  <mat-slide-toggle
+    *ngIf="isAdmin"
+    color="primary"
+    [checked]="meme.approved"
+    (toggleChange)="changeApproval()"
+  >
+    {{ meme.approved ? 'Meme aprobado' : 'Meme no aprobado' }}
+  </mat-slide-toggle>
   <button
     mat-raised-button
     [disabled]="isUpvoted"
     color="primary"
-    (click)="like.emit()"> LIKE ❤️ </button>
+    (click)="like.emit()"
+  >
+    LIKE ❤️
+  </button>
 </div>

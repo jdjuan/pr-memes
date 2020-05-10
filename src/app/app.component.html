@@ -1,34 +1,50 @@
-<mat-toolbar color="primary">
+<mat-toolbar class="mat-toolbar-row" color="primary">
   <h1>PR Memes</h1>
+
+  <app-login></app-login>
 </mat-toolbar>
 
 <div class="container">
-  <form class="entry-form" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field class="entry-form__input">
-      <mat-label>Meme URL</mat-label>
-      <input formControlName="url" matInput type="url" />
-    </mat-form-field>
-    <button
-      mat-raised-button
+  <div *ngIf="user$ | async as user">
+    <form class="entry-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field class="entry-form__input">
+        <mat-label>Meme URL</mat-label>
+        <input formControlName="url" matInput type="url" />
+        <mat-error>Por favor ingresa una URL válida</mat-error>
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="addingMeme"
+        type="submit"
+      >
+        <mat-spinner
+          class="entry-form__spinner"
+          [diameter]="22"
+          *ngIf="addingMeme; else notAdding"
+        ></mat-spinner>
+        <ng-template #notAdding> Send </ng-template>
+      </button>
+    </form>
+
+    <mat-slide-toggle
+      *ngIf="user.rol.admin"
       color="primary"
-      [disabled]="addingMeme"
-      type="submit"
+      [checked]="adminView | async"
+      (toggleChange)="adminView.next(!adminView.value)"
     >
-      <mat-spinner
-        class="entry-form__spinner"
-        [diameter]="22"
-        *ngIf="addingMeme; else notAdding"
-      ></mat-spinner>
-      <ng-template #notAdding> Send </ng-template>
-    </button>
-  </form>
+      {{ (adminView | async) ? 'Vista de administrador' : 'Vista de usuario' }}
+    </mat-slide-toggle>
+  </div>
   <br />
   <div *ngIf="memes$ | async as memes" class="meme-container">
     <mat-card *ngFor="let meme of memes">
       <app-meme
         [meme]="meme"
         [isUpvoted]="getLikesMap()[meme.id]"
+        [isAdmin]="adminView | async"
         (like)="likeMeme(meme)"
+        (approvedChange)="changeApproval($event)"
       ></app-meme>
     </mat-card>
   </div>

@@ -7,6 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 const matModules = [
   MatInputModule,
@@ -16,6 +17,7 @@ const matModules = [
   MatButtonModule,
   MatProgressSpinnerModule,
   MatSnackBarModule,
+  MatSlideToggleModule,
 ];
 
 @NgModule({

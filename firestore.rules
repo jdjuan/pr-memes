@@ -4,7 +4,7 @@ service cloud.firestore {
 
      match /memes/{memeId} {
     	allow read;
-    	allow create: if isAnyUser();
+    	allow create;
    		allow update: if isAdmin();
       allow delete: if isAdmin();
     }

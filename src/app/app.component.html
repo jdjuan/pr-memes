@@ -5,28 +5,27 @@
 </mat-toolbar>
 
 <div class="container">
+  <form class="entry-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field class="entry-form__input">
+      <mat-label>Meme URL</mat-label>
+      <input formControlName="url" matInput type="url" />
+      <mat-error>Por favor ingresa una URL válida</mat-error>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="addingMeme"
+      type="submit"
+    >
+      <mat-spinner
+        class="entry-form__spinner"
+        [diameter]="22"
+        *ngIf="addingMeme; else notAdding"
+      ></mat-spinner>
+      <ng-template #notAdding> Send </ng-template>
+    </button>
+  </form>
   <div *ngIf="user$ | async as user">
-    <form class="entry-form" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-form-field class="entry-form__input">
-        <mat-label>Meme URL</mat-label>
-        <input formControlName="url" matInput type="url" />
-        <mat-error>Por favor ingresa una URL válida</mat-error>
-      </mat-form-field>
-      <button
-        mat-raised-button
-        color="primary"
-        [disabled]="addingMeme"
-        type="submit"
-      >
-        <mat-spinner
-          class="entry-form__spinner"
-          [diameter]="22"
-          *ngIf="addingMeme; else notAdding"
-        ></mat-spinner>
-        <ng-template #notAdding> Send </ng-template>
-      </button>
-    </form>
-
     <mat-slide-toggle
       *ngIf="user.rol.admin"
       color="primary"

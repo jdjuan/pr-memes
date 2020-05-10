@@ -3,6 +3,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { Meme } from './models/meme.interface';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -12,24 +14,26 @@ import { Meme } from './models/meme.interface';
 export class AppComponent implements OnInit {
   title = 'pr-memes';
   memes$: Observable<Meme[]>;
-
+  urlReg = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
   likesMap: Record<string, boolean> = {};
+  addingMeme = false;
+  form = new FormGroup({
+    url: new FormControl('', [
+      Validators.required,
+      Validators.pattern(this.urlReg),
+    ]),
+  });
 
-  constructor(private firestore: AngularFirestore) {}
+  constructor(
+    private firestore: AngularFirestore,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.memes$ = this.firestore
       .collection<Meme>('memes', (ref) => ref.where('approved', '==', true))
       .valueChanges({ idField: 'id' })
       .pipe(first());
-  }
-
-  addMeme(url: string) {
-    this.firestore.collection<Meme>('memes').add({
-      approved: false,
-      url,
-      likes: 0,
-    });
   }
 
   likeMeme(meme: Meme) {
@@ -53,5 +57,44 @@ export class AppComponent implements OnInit {
     const currentMap = this.getLikesMap();
     currentMap[id] = true;
     localStorage.setItem('likesMap', JSON.stringify(currentMap));
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      this.addingMeme = true;
+      this.firestore
+        .collection<Meme>('memes')
+        .add({
+          approved: false,
+          url: this.form.value.url,
+          likes: 0,
+        })
+        .then(
+          () => {
+            this.form.reset();
+            this.form.markAsPristine();
+            this.addingMeme = false;
+            this.snackBar.open(
+              'Thank you! Your meme will show up in the feed once we approve it.',
+              null,
+              {
+                duration: 7000,
+              }
+            );
+          },
+          () => {
+            this.form.reset();
+            this.form.markAsPristine();
+            this.addingMeme = false;
+            this.snackBar.open(
+              'There has been a problem adding your meme. Please trying again later.',
+              null,
+              {
+                duration: 7000,
+              }
+            );
+          }
+        );
+    }
   }
 }

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
-import { Meme } from './models/meme.interface';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { first, switchMap } from 'rxjs/operators';
+import { AuthService } from './core/auth.service';
+import { Meme } from './models/meme.interface';
+import { AppUser } from './models/user.interface';
 
 @Component({
   selector: 'app-root',
@@ -23,17 +25,35 @@ export class AppComponent implements OnInit {
       Validators.pattern(this.urlReg),
     ]),
   });
+  user$: Observable<AppUser>;
+  adminView = new BehaviorSubject(false);
 
   constructor(
     private firestore: AngularFirestore,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private auth: AuthService
+  ) {
+    this.user$ = this.auth.user$;
+  }
 
   ngOnInit() {
-    this.memes$ = this.firestore
-      .collection<Meme>('memes', (ref) => ref.where('approved', '==', true))
-      .valueChanges({ idField: 'id' })
-      .pipe(first());
+    this.memes$ = this.adminView.pipe(
+      switchMap((viewOn) => {
+        if (viewOn) {
+          return this.firestore
+            .collection<Meme>('memes')
+            .valueChanges({ idField: 'id' })
+            .pipe(first());
+        } else {
+          return this.firestore
+            .collection<Meme>('memes', (ref) =>
+              ref.where('approved', '==', true)
+            )
+            .valueChanges({ idField: 'id' })
+            .pipe(first());
+        }
+      })
+    );
   }
 
   likeMeme(meme: Meme) {
@@ -96,5 +116,9 @@ export class AppComponent implements OnInit {
           }
         );
     }
+  }
+
+  changeApproval(meme: Meme) {
+    this.firestore.collection('memes').doc(meme.id).set(meme, { merge: true });
   }
 }

@@ -1,5 +1,7 @@
-<mat-toolbar color="primary">
+<mat-toolbar class="mat-toolbar-row" color="primary">
   <h1>PR Memes</h1>
+
+  <app-login></app-login>
 </mat-toolbar>
 
 <div class="container">
@@ -7,6 +9,7 @@
     <mat-form-field class="entry-form__input">
       <mat-label>Meme URL</mat-label>
       <input formControlName="url" matInput type="url" />
+      <mat-error>Por favor ingresa una URL válida</mat-error>
     </mat-form-field>
     <button
       mat-raised-button
@@ -22,13 +25,25 @@
       <ng-template #notAdding> Send </ng-template>
     </button>
   </form>
+  <div *ngIf="user$ | async as user">
+    <mat-slide-toggle
+      *ngIf="user.role.admin"
+      color="primary"
+      [checked]="adminView | async"
+      (toggleChange)="adminView.next(!adminView.value)"
+    >
+      {{ (adminView | async) ? 'Admin view' : 'User view' }}
+    </mat-slide-toggle>
+  </div>
   <br />
   <div *ngIf="memes$ | async as memes" class="meme-container">
     <mat-card *ngFor="let meme of memes">
       <app-meme
         [meme]="meme"
         [isUpvoted]="getLikesMap()[meme.id]"
+        [isAdmin]="adminView | async"
         (like)="likeMeme(meme)"
+        (approveChange)="changeApproval($event)"
       ></app-meme>
     </mat-card>
   </div>

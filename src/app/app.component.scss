@@ -18,6 +18,7 @@
 .entry-form {
   display: flex;
   align-items: center;
+  flex-direction: column;
 
   &__input {
     flex-grow: 1;
@@ -27,6 +28,23 @@
   &__spinner {
     margin: 10px auto;
   }
+
+  &__main {
+    display: flex;
+    align-items: center;
+  }
+
+  &__wrapper {
+    width: 100%;
+  }
+
+  &__tags {
+    display: block;
+  }
+}
+
+.admin-toggle {
+  margin-top: 20px;
 }
 
 .mat-toolbar-row {

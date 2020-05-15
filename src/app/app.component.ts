@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
@@ -24,9 +24,11 @@ export class AppComponent implements OnInit {
       Validators.required,
       Validators.pattern(this.urlReg),
     ]),
+    tags: new FormControl([]),
   });
   user$: Observable<AppUser>;
   adminView = new BehaviorSubject(false);
+  TAGS = ['Pull Request', 'Deployment', 'Bug'];
 
   constructor(
     private firestore: AngularFirestore,
@@ -47,13 +49,28 @@ export class AppComponent implements OnInit {
         } else {
           return this.firestore
             .collection<Meme>('memes', (ref) =>
-              ref.where('approved', '==', true)
+              ref.orderBy('likes', 'desc').where('approved', '==', true)
             )
             .valueChanges({ idField: 'id' })
             .pipe(first());
         }
       })
     );
+  }
+
+  deleteMeme(meme: Meme) {
+    this.firestore
+      .doc(`memes/${meme.id}`)
+      .delete()
+      .then(() => {
+        this.snackBar.open(
+          'Meme successfully deleted',
+          null,
+          {
+            duration: 7000,
+          }
+        );
+      });
   }
 
   likeMeme(meme: Meme) {
@@ -88,11 +105,14 @@ export class AppComponent implements OnInit {
           approved: false,
           url: this.form.value.url,
           likes: 0,
+          tags: this.form.value.tags,
         })
         .then(
           () => {
             this.form.reset();
             this.form.markAsPristine();
+            this.form.markAsUntouched();
+            this.form.controls.url.setErrors(null);
             this.addingMeme = false;
             this.snackBar.open(
               'Thank you! Your meme will show up in the feed once we approve it.',

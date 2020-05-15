@@ -3,4 +3,5 @@ export interface Meme {
   approved: boolean;
   id?: string;
   likes: number;
+  tags: string[];
 }

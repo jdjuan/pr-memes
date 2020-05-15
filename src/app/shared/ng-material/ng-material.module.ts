@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatChipsModule } from '@angular/material/chips';
 
 const matModules = [
   MatInputModule,
@@ -18,6 +19,7 @@ const matModules = [
   MatProgressSpinnerModule,
   MatSnackBarModule,
   MatSlideToggleModule,
+  MatChipsModule,
 ];
 
 @NgModule({
@@ -25,4 +27,4 @@ const matModules = [
   imports: [CommonModule, matModules],
   exports: [matModules],
 })
-export class NgMaterialModule {}
+export class NgMaterialModule { }

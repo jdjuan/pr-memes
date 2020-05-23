@@ -20,6 +20,9 @@ export class MemeComponent {
   like = new EventEmitter<void>();
 
   @Output()
+  delete = new EventEmitter<void>();
+
+  @Output()
   approveChange = new EventEmitter();
 
   changeApproval() {

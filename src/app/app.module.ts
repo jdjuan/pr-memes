@@ -11,9 +11,10 @@ import { MemeComponent } from './components/meme/meme.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './components/login/login.component';
 import { NgMaterialModule } from './shared/ng-material/ng-material.module';
+import { TagsComponent } from './components/tags/tags.component';
 
 @NgModule({
-  declarations: [AppComponent, MemeComponent, LoginComponent],
+  declarations: [AppComponent, MemeComponent, LoginComponent, TagsComponent],
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),

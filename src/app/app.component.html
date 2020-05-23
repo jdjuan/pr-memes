@@ -6,26 +6,31 @@
 
 <div class="container">
   <form class="entry-form" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field class="entry-form__input">
-      <mat-label>Meme URL</mat-label>
-      <input formControlName="url" matInput type="url" />
-      <mat-error>Por favor ingresa una URL válida</mat-error>
-    </mat-form-field>
-    <button
-      mat-raised-button
-      color="primary"
-      [disabled]="addingMeme"
-      type="submit"
-    >
-      <mat-spinner
-        class="entry-form__spinner"
-        [diameter]="22"
-        *ngIf="addingMeme; else notAdding"
-      ></mat-spinner>
-      <ng-template #notAdding> Send </ng-template>
-    </button>
+    <div class="entry-form__wrapper">
+      <div class="entry-form__main">
+        <mat-form-field class="entry-form__input">
+          <mat-label>Meme URL</mat-label>
+          <input formControlName="url" matInput type="url" />
+          <mat-error>Please add a valid URL</mat-error>
+        </mat-form-field>
+        <button
+          mat-raised-button
+          color="primary"
+          [disabled]="addingMeme"
+          type="submit"
+        >
+          <mat-spinner
+            class="entry-form__spinner"
+            [diameter]="22"
+            *ngIf="addingMeme; else notAdding"
+          ></mat-spinner>
+          <ng-template #notAdding> Send </ng-template>
+        </button>
+      </div>
+      <app-tags class="entry-form__tags" [allowedTags]="TAGS" formControlName="tags"></app-tags>
+    </div>
   </form>
-  <div *ngIf="user$ | async as user">
+  <div *ngIf="user$ | async as user" class="admin-toggle">
     <mat-slide-toggle
       *ngIf="user.role.admin"
       color="primary"
@@ -43,6 +48,7 @@
         [isUpvoted]="getLikesMap()[meme.id]"
         [isAdmin]="adminView | async"
         (like)="likeMeme(meme)"
+        (delete)="deleteMeme(meme)"
         (approveChange)="changeApproval($event)"
       ></app-meme>
     </mat-card>

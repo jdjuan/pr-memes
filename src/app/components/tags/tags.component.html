@@ -1,0 +1,6 @@
+<mat-chip-list aria-label="Tag selection">
+  <mat-chip color="accent" 
+            *ngFor="let tag of allowedTags"
+            (click)="toggleTag(tag)"
+            [class.selected]="isTagSelected(tag)">{{ tag }}</mat-chip>
+</mat-chip-list>
